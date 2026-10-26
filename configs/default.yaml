@@ -1,0 +1,29 @@
+# Training configuration, adapted from TasselNetV4 cfg_train/local_32_64_128_loose.yml.
+Model:
+  name: TasselNetV4
+  img_size: 384
+  patch_size: 16
+  embed_dim: 768
+  depth: 12
+  num_heads: 12
+  decoder_embed_dim: 512
+  mlp_ratio: 4
+  blocksize_list: [32, 64, 128]
+  output_stride_list: [16, 16, 16]
+Dataset:
+  batch_size: 8
+  num_workers: 0
+Loss:
+  loss: L1
+  use_mask: false
+Optimizer:
+  accum_iter: 1
+  blr: 0.0002
+  epochs: 400
+  lr: 0.0001
+  min_lr: 0
+  warmup_epochs: 10
+  weight_decay: 0.05
+Training:
+  device: cpu
+  seed: 728

@@ -1,101 +1,122 @@
-# TasselNetV4: A vision foundation model for cross-scene, cross-scale, and cross-species plant counting
+# TasselNetV4-Jittor
 
-Official implementation of [TasselNetV4](https://arxiv.org/abs/2509.20857)
+Jittor implementation of [TasselNetV4](https://arxiv.org/abs/2509.20857) for
+plant counting. Given an image and a few exemplar boxes, the model estimates
+the number of plants in the image.
 
-[ISPRS Journal of Photogrammetry and Remote Sensing](https://www.sciencedirect.com/science/article/pii/S0924271625004575) (IF=12.2).
-
-Xiaonan Hu, Xuebing Li, Jinyu Xu, Abdulkadir Duran Adan, Xuhui Zhu, Yanan Li, Wei Guo, Shouyang Liu, Wenzhong Liu, Hao Lu*
-
-
-## Highlights
-- **Plant agnostic counting:** a new plant-orientated task customizing Class-agnostic counting into the plant domain and highlighting zero-shot generalization across taxomomic plant species;
-- **PAC-105 and PAC-Somalia:** two challenging PAC datasets for training and evaluating daily and out-of-distribution plant species;
-- **TasselNetV4:** an extended version of the TasselNet plant counting models.
-
-![motivation](/assets/motivation.png "plant-specific counting to plant-agnostic counting")
-
-### Comparison with the state-of-the-art CAC approaches on the PAC-105 dataset. Best performance is in boldface.
-
-
-| Method                     | Venue & Year     | Shot        | MAE↓  | RMSE↓  | WCA↑ | $R^2$ ↑  |  checkpoints  |
-|----------------------------|-----------------|-------|-------|--------|------|------|------|
-| FamNet  | CVPR'21         | 3   | 31.70 | 62.58  | 0.49 | 0.56 | [Baiduyun](https://pan.baidu.com/s/1QVJcZA2CELPf9aRS5QXDPQ?pwd=bg5y) |
-| BMNet+  | CVPR'22         | 3   | 27.03 | 60.18  | 0.56 | 0.61 | [Baiduyun](https://pan.baidu.com/s/1cKjICAi4WDShRlheK9b3wA?pwd=qjp9) |
-| SPDCNet | BMVC'22         | 3   | 25.21 | 49.98  | 0.58 | 0.92 | [Baiduyun](https://pan.baidu.com/s/1YM9caohZKS5ERk8XBFL5Pw?pwd=xshm) |
-| SAFECount | WACV'23         | 3   | 25.59 | 52.09  | 0.58 | 0.91 | [Baiduyun](https://pan.baidu.com/s/1Y3KormYsO6hAFEYD3zRFjQ?pwd=swv5) |
-| CountTR   | BMVC'22         | 3   | 25.25 | 49.31  | 0.63 | 0.92 | [Baiduyun](https://pan.baidu.com/s/1ASJCBc3QK8TR-uItlZcs8A?pwd=94at) |
-| T-Rex2    | ECCV'24         | 3   | 26.04 | 49.31  | 0.58 | 0.92 |  |
-| CACViT    | AAAI'24         | 3   | 19.51 | 29.59  | 0.68 | 0.89 | [Baiduyun](https://pan.baidu.com/s/1qpVekxoPaMo30dV1wfXhIA?pwd=s26c) |
-| **TasselNetV4 (Ours)**      | ISPRS'25       | 3   | **16.04** | **28.03** | **0.74** | **0.92** | 
-| FamNet    | CVPR'21         | 1   | 35.91±0.966 | 71.78±1.188 | 0.42±0.014 | 0.45±0.024 | |
-| BMNet     | CVPR'22         | 1   | 28.78±0.324 | 62.12±0.437 | 0.15±0.001 | 0.59±0.008 | |
-| CountTR   | BMVC'22         | 1   | 28.46±0.226 | 49.84±0.646 | 0.70±0.037 | 0.73±0.006 | |
-| CACViT    | AAAI'24         | 1   | 21.80±0.429 | 38.40±1.526 | 0.64±0.005 | 0.84±0.013 | |
-| **TasselNetV4 (Ours)**      | ISPRS'25       | 1   | **18.04±0.339** | **32.04±1.213** | **0.71±0.005** | **0.90±0.009** | |
-
-
-
-### Comparison with the state-of-the-art CAC approaches on the PAC-Somalia dataset. Best performance is in boldface.
-
-| Method                     | Venue & Year     | Shot     | MAE↓  | RMSE↓  | WCA↑ | $R^2$ ↑  |
-|----------------------------|-----------------|-------|--------|------|------|------|
-| CountTR                   | BMVC'22         | 3     | 12.71 | 23.87  | 0.38 | 0.57 |
-| CACViT                    | AAAI'24      | 3     | 14.00 | 17.00  | 0.55 | 0.78 |
-| **TasselNetV4 (Ours)**    | This Paper      | 3     | **8.88** | **13.11** | **0.72** | **0.87** |
-| CountTR                   | BMVC'22         | 1     | 12.79±0.076 | 24.20±0.292 | 0.37±0.005 | 0.55±0.012 |
-| CACViT                    | AAAI'24         | 1     | 14.74±0.138 | 18.23±0.446 | 0.53±0.005 | 0.75±0.012 |
-| **TasselNetV4 (Ours)**    | ISPRS'25     | 1     | **10.98±0.065** | **16.73±0.150** | **0.65±0.000** | **0.80±0.005** |
-
-
-## Visualization
-![visualization](/assets/visualization.png "Visualization of baselines and our method")
+Based on [tiny-smart/TasselNetV4](https://github.com/tiny-smart/TasselNetV4).
 
 ## Installation
-To setup all the required dependencies for training and evaluation, please follow the instructions below:
+
+Requires Linux, Python 3.9–3.12 and `g++`. Development and testing use Python 3.10.
 
 ```bash
-conda env create -f environment.yaml
-conda activate TN4
+git clone https://github.com/EnterUniverse/TasselNetV4-Jittor.git
+cd TasselNetV4-Jittor
+python3.10 -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
 
+Jittor compiles its runtime on first use. See the
+[Jittor installation guide](https://cg.cs.tsinghua.edu.cn/jittor/) for CUDA setup.
+Commands use CPU by default; add `--device cuda` to use a GPU.
 
-## Prepare Dataset
+## Pretrained weights
 
-**PAC-105&PAC-Somalia**
+Download the original weights from the
+[upstream project](docs/upstream/README.md#inference), then convert them:
 
-Download training dataset PAC-105 from [Baiduyun (2.8G)](https://pan.baidu.com/s/1gB78ekTl-cHbkoIyZMtiYA?pwd=hgxp) | [Google Drive (2.8G)](https://drive.google.com/file/d/1IB6yPXEvXQN3AbAYPjprHb0xsGP0BeHq/view?usp=drive_link) and test dataset PAC-Somalia from: [Baiduyun (208M)](https://pan.baidu.com/s/1UH0rihsMe06_5J8AtALTeg?pwd=jssy) | [Google Drive (208M)](https://drive.google.com/file/d/1-haH0eZdpcOK9IMGkw0UafWq_YioHIyn/view?usp=drive_link). The dataset structure should look like this:
-````
-/dataset
-├──── aska
-    ├──── aska_fruit
-        ├──── images
-            ├──── image1.png
-            └──── ...
-        └──── labels
-            └──── aska.csv
-├──── boocbooc
-├──── ......
-├──── yicib
-└──── dataset.csv
-````
+```bash
+pip install '.[conversion]'
+tasselnet-convert original.pth checkpoints/tasselnetv4.npz
+```
+
+PyTorch is needed for conversion. Training and inference use Jittor.
+The converter prints the encoder depth; set `Model.depth` in
+`configs/default.yaml` to match it. The original training and test
+configurations use depths 12 and 11 respectively.
 
 ## Inference
-First modify *Dataset.data_path* and *Resume.resume_path* in `cfg_test/local_32_64_128_loose.yml`;
 
-Download our model from [Baiduyun (1.05G)](https://pan.baidu.com/s/1B71m2TDmClENOevlTUxC1w?pwd=qdgr) | [Google Drive (1.05G)](https://drive.google.com/file/d/1vrHBv8c1PFJjOX_IXPe0K0oXYNkY7a__/view?usp=drive_link);
+Create `boxes.json` with exemplar boxes in original image coordinates,
+using `[x1, y1, x2, y2]`:
 
-Run the following command to reproduce our results of TasselNetV4 on the PAC-105 / PAC-Somalia:
+```json
+[[40, 25, 80, 75], [180, 90, 220, 145], [290, 60, 330, 110]]
+```
 
-`python test_checkpoint.py`
-    
-- Results will be saved in the path `./visual`.
-  
+```bash
+tasselnet-predict image.jpg --boxes boxes.json \
+  --checkpoint checkpoints/tasselnetv4.npz
+```
+
+The command prints the predicted count as JSON. Use one box for one-shot
+prediction. Images are resized and processed in 384×384 tiles.
+
+## Dataset
+
+Download [PAC-105 or PAC-Somalia](docs/upstream/README.md#prepare-dataset)
+and arrange the files as follows:
+
+```text
+PAC/
+├── dataset.csv                  # split,variety,foldname
+└── aska/
+    └── aska_fruit/
+        ├── images/image1.png
+        └── labels/aska.csv      # filename,region_shape_attributes,...
+```
+
+Label CSVs use VIA annotations: `rect` shapes for exemplar boxes and `point`
+shapes for plant centers.
+
 ## Training
-First modify path in `cfg_train/local_32_64_128_loose.yml`;
 
-Run the following command to train your model
+Set the batch size and optimizer options in `configs/default.yaml`, then run:
 
-`python train_val.py`
+```bash
+tasselnet-train --data /path/to/PAC --output outputs/train --device cuda
+```
+
+Use `--encoder converted_mae.npz` to initialize the encoder from MAE weights,
+`--checkpoint model.npz` to load model weights, or `--resume outputs/train/last.pkl`
+to resume training with optimizer state. Add `--shots 1` for one-shot training
+and `--eval-every N` to validate every N epochs.
+
+Checkpoints and training logs are saved under `--output`.
+
+## Evaluation
+
+```bash
+tasselnet-evaluate --data /path/to/PAC \
+  --checkpoint checkpoints/tasselnetv4.npz \
+  --split val test --output outputs/evaluation.json --device cuda
+```
+
+Results include MAE, RMSE, WCA, R² and per-image predictions.
+Use `--shots 1` for one-shot evaluation. Both training and evaluation accept
+`--config path/to/config.yaml`. The scripts `train_val.py` and
+`test_checkpoint.py` provide the same commands.
+
+## Development
+
+```bash
+pip install -e '.[test]'
+pytest -q
+```
+
+See [model and data details](docs/model.md) for configuration and preprocessing.
+
+## Reference
+
+Xiaonan Hu et al. *TasselNetV4: A vision foundation model for cross-scene,
+cross-scale, and cross-species plant counting.* ISPRS Journal of Photogrammetry
+and Remote Sensing, 2025.
+
+[Paper](https://arxiv.org/abs/2509.20857) ·
+[Original implementation](https://github.com/tiny-smart/TasselNetV4)
 
 ## License
-This repository is released under the Apache 2.0 license as found in the [LICENSE](./LICENSE).
+
+[Apache-2.0](LICENSE). See [NOTICE](NOTICE) for attribution.

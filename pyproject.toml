@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tasselnetv4-jittor"
+version = "0.1.0"
+description = "Jittor implementation of TasselNetV4 plant-agnostic counting"
+requires-python = ">=3.9,<3.13"
+license = {text = "Apache-2.0"}
+dependencies = ["jittor==1.3.10.0", "numpy>=1.24,<2", "Pillow>=9.1", "scipy>=1.10", "PyYAML>=6"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+conversion = ["torch>=2.2"]
+
+[project.scripts]
+tasselnet-train = "tasselnetv4.train:main"
+tasselnet-evaluate = "tasselnetv4.evaluate:main"
+tasselnet-convert = "tasselnetv4.checkpoint:main"
+tasselnet-predict = "tasselnetv4.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

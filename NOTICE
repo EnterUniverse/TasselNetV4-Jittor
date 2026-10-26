@@ -1,0 +1,12 @@
+TasselNetV4-Jittor
+
+This software is derived from TasselNetV4 by Xiaonan Hu, Xuebing Li,
+Jinyu Xu, Abdulkadir Duran Adan, Xuhui Zhu, Yanan Li, Wei Guo,
+Shouyang Liu, Wenzhong Liu, and Hao Lu.
+Original repository: https://github.com/tiny-smart/TasselNetV4
+Upstream revision: c0bc80d5c51a57662238267deb1576acf4a62add
+Original license: Apache License, Version 2.0 (included in LICENSE).
+
+The model, data pipeline, training, evaluation and checkpoint handling have
+been adapted for Jittor. Original documentation and figures are retained
+from the source project.
